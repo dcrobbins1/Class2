@@ -1,0 +1,27 @@
+body, html{
+    background: #96c8f4;
+    color: #1f1e1e;
+    padding:40px;
+    font: 16px Arial, sans-serif;
+
+}
+
+p{
+    background-color: azure;
+}
+
+a{
+    display:inline-block;
+    padding:25px;
+    border-radius:9999px;
+    background-color: gainsboro;
+    color: navy;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+a:hover{
+    background-color: gray;
+
+
+}
