@@ -1,0 +1,61 @@
+#AI Assistance: Used ChatGPT to help refine codes 
+## Documentation:
+# MSBA Group 10 (Daniel Robbins, Redemeer Gawu, Jessie Lin, Thirtha Poruthikode Unnivelan)
+#2. Question/Story: (What are you trying to show and why?) - Thirtha
+#The goal of this analysis is to examine how the stock prices of the “MAAG” group (Meta, Apple, Amazon, and Google) were impacted by COVID-19 during the first year of the pandemic. By plotting both the individual daily closing prices and the aggregate day-over-day percentage change, we can see how some of the most influential tech giants in the market responded to one of the largest external shocks to the global economy in recent history. The percent change specifically shows how although the prices went back to normal, the economy was must more volatile. The resilience of the tech sector compared to broader market trends reveals the comparative advantage they have as data-driven firms.
+#3. Data Choices: (Which tickers/series and time span, and why?) - Thirtha
+#The tickers/series we chose were "META", "AAPL", "AMZN", and "GOOG". We chose these firms because they are widely regarded as leaders in the technology sector as well as drivers of the overall stock market. The time span we chose was from January 1, 2020 to December 31, 2020, because it captures the onset and early progression of the COVID-19 pandemic.
+#4. Takeaway ((2–3 sentences): What should a reader notice? (- In early 2020, the COVID-19 pandemic triggered sharp volatility in the stocks of Meta, Apple, Amazon and Google, with steep declines around March as uncertainty gripped global markets. 
+#This sudden disruption showed how external shocks can quickly unsettle even the strongest companies. This was from normal rates to extreme percent change and continued to change a lot over the rest of the year) - Redeemer Gawu
+
+
+# pip install yfinance matplotlib using terminal
+
+import matplotlib.pyplot as plt
+import yfinance as yf
+from datetime import datetime
+
+#For our analysis, we reviewed the top 4 American tech companies' stock prices and their movement during the COVID-19 pandemic. Here how we pulled data from January 1, 2020 to December 31, 2020.
+tickers = ["META", "AAPL", "AMZN", "GOOGL"]
+start = "2020-01-01"
+end_exclusive = datetime.fromisoformat("2021-01-01")  # Dates inclusive through 2020 Dec 31. 
+
+# Download and prepare data.
+data = yf.download(tickers=tickers, start=start, end=end_exclusive, auto_adjust=True, progress=False)
+closes = data["Close"][tickers].dropna(how="all")
+
+# Aggregate the day-to-day percentage change in stock price from the four companies. 
+# The purpose of this is to analyze the vulnerability of the market to extraneous events.
+agg_pct = closes.sum(axis=1).pct_change() * 100
+ 
+# For our plot, we used a dual-axis line graph to collectively reflect change in stock price in each respective company, as well as their aggregate percentage change in stock price. 
+fig, ax = plt.subplots(figsize=(12, 6))
+for t in tickers:
+    ax.plot(closes.index, closes[t], label=t)
+
+# Set up the left y-axis as Stock Price.
+ax.set_xlabel("Date")
+ax.set_ylabel("Daily Closing Price (USD)")
+
+# Set title to "MAAG Stock Prices & Aggregate Percentage Change".
+ax.set_title("MAAG Stock Prices & Aggregate Percentage Change in 2020")
+ax.grid(True, alpha=0.3)
+
+
+# Set up the right y-axis as Aggregate Percentage of Change (%).
+ax_r = ax.twinx()
+agg_line, = ax_r.plot(agg_pct.index, agg_pct, color="grey", linestyle="-", linewidth=2, label="Aggregate Percentage of Change")
+ax_r.set_ylabel("Aggregate Percentage of Change (%)")
+ax_r.set_ylim(0, 25)
+
+handles = ax.get_lines() + [agg_line]
+labels = [h.get_label() for h in handles]
+ax.legend(handles, labels, loc="upper left", frameon=True)
+
+# We add a note for source citation. 
+plt.figtext(0.5,0.01,"Source: Yahoo Finance",ha="center",fontsize=10,color="dimgray")
+
+# Ensure everything fits nicely
+plt.tight_layout(rect=[0, 0.03, 1, 1])
+plt.show()
+
